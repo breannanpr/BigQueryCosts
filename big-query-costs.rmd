@@ -1,0 +1,42 @@
+---
+title: "Big Query Costs"
+author: "Breanna Niekamp"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Assignment Overview
+
+In this short project, I will estimate some of the costs that are associated with Big Query and come up with strategies to mitigate those costs. 
+
+```{sql connection=}
+## Here is my SQL Query
+
+```
+
+
+How much data is processed by the query? 
+
+How much data would be processed by the query against a full year of data? 
+
+What is the cost of running the query against a full year of data? 
+
+What would be the cost of running the query against a full year of data every six hours for a year?
+
+## Queries
+`SELECT COUNT(*)` from the table.
+
+`SELECT location, COUNT(*)` from the table.
+
+`SELECT url, location` from the table.
+
+`SELECT url, raw_html, location` for just the "missoula" location from the table.
+
+## Additional Questions
+Based on the data gathered above, what types of queries appear to be driving the costs? 
+
+How would you recommend structuring the project to keep costs down?
