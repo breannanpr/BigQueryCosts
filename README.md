@@ -1,2 +1,4 @@
-# BigQueryCosts
-Big Query Costs
+# Big Query Costs
+
+In this short project, we will investigate some of the estiamted costs that might incur whilst working with Big Query, and then come up with strategies to mitigate those costs. 
+ 
