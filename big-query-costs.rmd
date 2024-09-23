@@ -2,41 +2,82 @@
 title: "Big Query Costs"
 author: "Breanna Niekamp"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(include = FALSE)
+## Loading libraries
+library(bigrquery)
 ```
 
 ## Assignment Overview
 
-In this short project, I will estimate some of the costs that are associated with Big Query and come up with strategies to mitigate those costs. 
+In this project, we will work through estimating the costs of working with BigQuery and come up with strategies to mitigate those costs. We will work with a sample dataset of 50,000 records from the Carbitrage project, using BigQuery queries and estimating the cost for a full year of data (2.5 million records). The table we are working with is `umt-msba.carbitrage.raw_listing_pages_50K_20240913`.
 
-```{sql connection=}
-## Here is my SQL Query
-
-```
-
-
-How much data is processed by the query? 
-
-How much data would be processed by the query against a full year of data? 
-
-What is the cost of running the query against a full year of data? 
-
-What would be the cost of running the query against a full year of data every six hours for a year?
+For each query we will:
+- Paste the query
+- Record the amount of data processed by the pasted query
+- Estimate how much data would be processed by the query against a full year of data
+- Estimate the cost for running the query against a full year of data
+- and finally estimate the cost of running the query every six hours for a year
 
 ## Queries
-`SELECT COUNT(*)` from the table.
 
-`SELECT location, COUNT(*)` from the table.
+### Query 1
 
-`SELECT url, location` from the table.
+**`SELECT COUNT(*)` from the table.**
+SELECT * 
+FROM `umt-msba.carbitrage.raw_listing_pages_50K_20240913` 
 
-`SELECT url, raw_html, location` for just the "missoula" location from the table.
+Recorded amount of data processed: 1.37 GB (1.275912 GiB)
+Estimate of how much data would be processed by the query against a full year of data: 63.7956 GiB
+Estimate of the cost for running the query against a full year of data: $0.31
+Estimate the cost of running the query every six hours for a year: $455.79
 
-## Additional Questions
-Based on the data gathered above, what types of queries appear to be driving the costs? 
 
-How would you recommend structuring the project to keep costs down?
+### Query 2
+
+**`SELECT location, COUNT(*)` from the table.**
+SELECT location, COUNT(*) 
+FROM `umt-msba.carbitrage.raw_listing_pages_50K_20240913` 
+GROUP BY location
+ORDER BY 2 DESC
+
+Recorded amount of data processed: 480.44 KB (0.0004474446 GiB)
+Estimate of how much data would be processed by the query against a full year of data: 0.2237223 GiB
+Estimate of the cost for running the query against a full year of data: $0.00011
+Estimate the cost of running the query every six hours for a year: $0.16
+
+
+### Query 3
+
+**`SELECT url, location` from the table.**
+SELECT url, location
+FROM `umt-msba.carbitrage.raw_listing_pages_50K_20240913`
+ORDER BY datetime_pulled DESC
+
+Recorded amount of data processed: 5.1 MB (0.00474975 GiB)
+Estimate of how much data would be processed by the query against a full year of data: 0.2374875 GiB
+Estimate of the cost for running the query against a full year of data: $0.00116 
+Estimate the cost of running the query every six hours for a year: $1.69
+
+
+### Query 4
+
+**`SELECT url, raw_html, location` for just the "missoula" location from the table.**
+SELECT url, raw_html, location
+FROM `umt-msba.carbitrage.raw_listing_pages_50K_20240913`
+WHERE location = 'missoula'
+ORDER BY datetime_pulled DESC
+
+Recorded amount of data processed: 1.37 GB (1.275912 GiB)
+Estimate of how much data would be processed by the query against a full year of data: 63.7956 GiB
+Estimate of the cost for running the query against a full year of data: $0.31
+Estimate the cost of running the query every six hours for a year: $455.79
+
+
+## Conclusion
+Based on the data gathered above, it would seem that the queries that drive costs include those that query the full dataset and queries that include bigger columns like the raw_html. It would be good to include more filtration when querying such as selecting only the needed columns, and using more clauses like "WHERE". The more precise you are with what is needed, the cheaper it would be. 
